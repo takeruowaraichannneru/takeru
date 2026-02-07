@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Breakout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="breakout.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <header>
+            <h1>NEON BREAKOUT</h1>
+            <div class="stats">
+                <div class="stat-box">SCORE: <span id="score">0</span></div>
+                <div class="stat-box">LIVES: <span id="lives">3</span></div>
+                <div class="stat-box">LEVEL: <span id="level">1</span></div>
+            </div>
+            <a href="index.html" class="back-link">← Back to Portfolio</a>
+        </header>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="start-screen" class="overlay active">
+            <h2>READY?</h2>
+            <p>Click or Press Space to Start</p>
+        </div>
+
+        <div id="game-over-screen" class="overlay">
+            <h2>GAME OVER</h2>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <button id="restart-btn">Try Again</button>
+        </div>
+
+        <div id="victory-screen" class="overlay">
+            <h2>YOU WIN!</h2>
+            <p>Score: <span id="victory-score">0</span></p>
+            <button id="next-level-btn">Play Again</button>
+        </div>
+    </div>
+    <script src="js/breakout.js"></script>
+</body>
+
+</html>

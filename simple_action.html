@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爆笑！お笑いライブ</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            overflow: hidden;
+            color: #333;
+        }
+
+        #stage-container {
+            position: relative;
+            width: 1000px;
+            height: 750px;
+            background: radial-gradient(circle at 50% 80%, #fff 0%, #f1c40f 20%, #e67e22 50%, #2c3e50 90%);
+            border: 10px solid #c0392b;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+        }
+
+        /* Curtain */
+        .curtain {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, #c0392b, #e74c3c, #c0392b);
+            z-index: 20;
+            transition: transform 1.5s ease-in-out;
+        }
+
+        .curtain-left {
+            left: 0;
+            transform-origin: top left;
+        }
+
+        .curtain-right {
+            right: 0;
+            transform-origin: top right;
+        }
+
+        .open .curtain-left {
+            transform: scaleX(0.1);
+        }
+
+        .open .curtain-right {
+            transform: scaleX(0.1);
+        }
+
+        /* Spotlight */
+        .spotlight {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 900px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Characters */
+        .character {
+            position: absolute;
+            bottom: 50px;
+            width: 150px;
+            height: 300px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            height: 250px;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: idle 3s ease-in-out infinite;
+        }
+
+        @keyframes idle {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Simple CSS Geinin shapes */
+        .geinin-body {
+            position: absolute;
+            bottom: 0;
+            width: 100px;
+            height: 180px;
+            border-radius: 10px;
+            left: 25px;
+        }
+
+        .geinin-head {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #ffeaa7;
+            border: 3px solid #000;
+        }
+
+        .geinin-face {
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            font-size: 30px;
+        }
+
+        .suit-blue {
+            background: #0984e3;
+            border: 3px solid #000;
+        }
+
+        .suit-red {
+            background: #d63031;
+            border: 3px solid #000;
+        }
+
+        #partner {
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        /* Boke */
+        #player {
+            right: 20%;
+            animation-delay: 0.5s;
+        }
+
+        /* Tsukkomi */
+
+        /* Mic Stand */
+        #mic {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 250px;
+            background: #95a5a6;
+            z-index: 10;
+        }
+
+        #mic::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -15px;
+            width: 40px;
+            height: 40px;
+            background: #bdc3c7;
+            border-radius: 50%;
+            border: 4px solid #7f8c8d;
+        }
+
+        /* Speech Bubbles - Attached to characters */
+        .bubble {
+            position: absolute;
+            bottom: 320px;
+            /* Above the character head */
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #fff;
+            border: 3px solid #333;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.4rem;
+            /* Larger for better visibility */
+            font-weight: bold;
+            z-index: 100;
+            /* Ensure it's above curtains and audience */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            max-width: 350px;
+            min-width: 220px;
+            pointer-events: none;
+        }
+
+        .bubble.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Boke Bubble (Left/Blue) */
+        #partner-bubble {
+            background: #fff9c4;
+            /* Yellow for setup */
+        }
+
+        #partner-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #333 transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Tsukkomi Bubble (Right/Red) */
+        #player-bubble {
+            background: #fff;
+        }
+
+        #player-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #333 transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Input Area */
+        #input-area {
+            position: absolute;
+            bottom: -200px;
+            /* Hidden initially */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 30;
+            transition: bottom 0.3s;
+            width: 80%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            border: 3px solid #333;
+        }
+
+        #input-area.active {
+            bottom: 30px;
+        }
+
+        #joke-input {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 1.2rem;
+            border: 2px solid #555;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #action-btn {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #c0392b;
+        }
+
+        #action-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* Meters */
+        #laugh-meter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            height: 40px;
+            background: #333;
+            border: 2px solid #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            z-index: 15;
+        }
+
+        #laugh-fill {
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, #f1c40f, #e74c3c);
+            transition: width 0.5s;
+        }
+
+        .laugh-label {
+            position: absolute;
+            top: 30px;
+            right: 340px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 15;
+        }
+
+        /* Feedback Effect */
+        #feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 4rem;
+            font-weight: 900;
+            color: #e74c3c;
+            text-shadow: 5px 5px 0 #fff, -5px -5px 0 #fff;
+            z-index: 40;
+            pointer-events: none;
+            transition: transform 0.2s;
+        }
+
+        #feedback.show {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        /* Audience */
+        .audience {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            height: 150px;
+            background: repeating-linear-gradient(90deg, #000 0%, #000 20px, transparent 20px, transparent 40px);
+            opacity: 0.8;
+            z-index: 25;
+            mask-image: linear-gradient(to bottom, transparent, black);
+        }
+
+        /* Judges Panel CSS (Injected here) */
+        #judges-panel {
+            position: absolute;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            display: flex;
+            justify-content: space-around;
+            background: #222;
+            border: 4px solid #fff;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 50;
+            transition: bottom 0.5s;
+        }
+
+        #judges-panel.visible {
+            bottom: 50px;
+        }
+
+        .judge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            width: 80px;
+        }
+
+        .judge-face {
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+
+        .judge-name {
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+            height: 2.4em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-board {
+            width: 60px;
+            height: 40px;
+            background: #000;
+            color: #e74c3c;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #555;
+        }
+
+        #final-result {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 50px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 60;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 5px solid #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        #final-result.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .total-score {
+            font-size: 3rem;
+            color: #c0392b;
+            font-weight: 900;
+        }
+
+        .rank-text {
+            font-size: 2rem;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        #group-tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #f1c40f;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid #f1c40f;
+            z-index: 10;
+        }
+
+        /* Final Battle UI */
+        #final-battle-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+
+        #final-battle-overlay.show {
+            display: flex;
+        }
+
+        .rival-card {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .rival {
+            text-align: center;
+            width: 150px;
+            padding: 20px;
+            border: 3px solid #555;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .rival.active {
+            border-color: #f1c40f;
+            box-shadow: 0 0 20px #f1c40f;
+        }
+
+        .vote-count {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .voter-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            min-height: 40px;
+        }
+
+        .voter-icon {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="stage-container">
+        <!-- Curtains -->
+        <div class="curtain curtain-left" id="c-left"></div>
+        <div class="curtain curtain-right" id="c-right"></div>
+
+        <div class="spotlight"></div>
+        <div class="laugh-label">爆笑度</div>
+        <div id="laugh-meter">
+            <div id="laugh-fill"></div>
+        </div>
+
+        <div id="feedback">ドッカン！</div>
+        <div id="group-tag">コンビ名：たける</div>
+
+        <!-- Final Battle Overlay -->
+        <div id="final-battle-overlay">
+            <h1 style="font-size: 3rem; color: #f1c40f; text-shadow: 0 0 10px #f1c40f;">最終決戦 (THE FINAL)</h1>
+            <p style="font-size: 1.2rem;">審査員7名による決選投票開始！</p>
+
+            <div class="rival-card">
+                <div class="rival" id="rival-takeru">
+                    <div style="font-size: 1.5rem;">たける</div>
+                    <div class="voter-icons" id="votes-takeru"></div>
+                    <div class="vote-count" id="count-takeru">0</div>
+                </div>
+                <div class="rival" id="rival-kakeru">
+                    <div style="font-size: 1.5rem;">かける</div>
+                    <div class="voter-icons" id="votes-kakeru"></div>
+                    <div class="vote-count" id="count-kakeru">0</div>
+                </div>
+                <div class="rival" id="rival-wataru">
+                    <div style="font-size: 1.5rem;">わたる</div>
+                    <div class="voter-icons" id="votes-wataru"></div>
+                    <div class="vote-count" id="count-wataru">0</div>
+                </div>
+            </div>
+
+            <div id="battle-result" style="margin-top: 50px; font-size: 2.5rem; font-weight: bold; min-height: 1.5em;">
+            </div>
+            <button id="restart-btn" onclick="location.reload()"
+                style="display:none; padding: 10px 30px; font-size: 1.5rem; cursor:pointer; margin-top: 20px;">もう一度挑戦する</button>
+        </div>
+
+
+        <div id="partner" class="character">
+            <div id="partner-bubble" class="bubble">...</div>
+            <div class="geinin-body suit-blue"></div>
+            <div class="geinin-head">
+                <img src="https://randomuser.me/api/portraits/men/14.jpg" alt="Partner"
+                    style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            </div>
+        </div>
+
+        <div id="mic"></div>
+
+        <div id="player" class="character">
+            <div id="player-bubble" class="bubble">...</div>
+            <div class="geinin-body suit-red"></div>
+            <div class="geinin-head">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Player"
+                    style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            </div>
+        </div>
+
+        <div class="audience"></div>
+
+        <div id="input-area">
+            <div id="speaker-label"
+                style="color: #fff; font-size: 0.9rem; margin-bottom: 5px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 2px 10px; border-radius: 10px; display: inline-block;">
+                ボケの台詞を入力</div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="joke-input" placeholder="面白いボケを入力してや！" autocomplete="off">
+                <button id="action-btn" onclick="handleSubmit()">話す</button>
+            </div>
+        </div>
+
+        <div id="judges-panel"></div>
+        <div id="final-result">
+            <h2>最終得点</h2>
+            <div class="total-score" id="total-points">---</div>
+            <div class="rank-text" id="rank-msg"></div>
+            <button id="retry-btn" onclick="location.reload()"
+                style="margin-top:20px; padding:10px 20px; font-size:1.5rem; cursor:pointer;">次の出番へ</button>
+        </div>
+    </div>
+
+    <script>
+        const stage = document.getElementById('stage-container');
+        const cLeft = document.getElementById('c-left');
+        const cRight = document.getElementById('c-right');
+
+        const partnerBubble = document.getElementById('partner-bubble');
+        const playerBubble = document.getElementById('player-bubble');
+
+        const inputArea = document.getElementById('input-area'); // Changed from choicesArea
+        const jokeInput = document.getElementById('joke-input'); // New input
+        const laughFill = document.getElementById('laugh-fill');
+        const feedbackEl = document.getElementById('feedback');
+        const partnerEl = document.getElementById('partner');
+        const playerEl = document.getElementById('player');
+        const actionBtn = document.getElementById('action-btn');
+
+        let laughScore = 50;
+        let currentLineIndex = 0;
+        let currentSpeaker = 'boke'; // 'boke' or 'tsukkomi'
+        let lastBokeText = "";
+
+        // Fully Dynamic Topic Generation System
+        let currentTopic = "game";
+        let usedContext = [];
+
+        function generateDynamicBoke(retort) {
+            // Context-aware Boke Generator
+            if (!retort) return "どうもー！適当コンビです！今日もオカンがな、あるものの名前忘れたらしくてね。";
+
+            if (retort.includes("ポケモン") || retort.includes("時代")) {
+                return "せやった！ポケモンは俺らの時代の話やったな！ほなオカンが言うてたんは、もっと古い「メンコ」とかの話なんかな？";
+            }
+            if (retort.includes("何") || retort.includes("それ")) {
+                return "何かって言われたら困るけどな、見た目は丸くて、触るとぷにぷにしてるらしいわ。";
+            }
+            if (retort.includes("泥棒") || retort.includes("犯罪")) {
+                return "人聞き悪いわ！オカンは「心の隙間を埋めてる」言うてたわ。そのために夜中にバール持って歩いてるらしいねん。";
+            }
+            if (retort.includes("違う") || retort.includes("ちゃう")) {
+                return "違うんか！ほな、もっとキラキラした、女子高生に人気のある「漬物」の話なんかな？";
+            }
+
+            // Random Pivot based on retort length or keywords
+            const randomPivots = [
+                `お前が「${retort}」って言うから思い出したわ！その作品、空から「たこ焼き」が降ってくるシーンがあるらしいねん。`,
+                "そうそう、その感じや！でもな、オカンが言うには「主食がプロテイン」の物語らしいわ。",
+                "いや、それより聞いてや。その主人公、移動手段が「セグウェイ」らしいねん。"
+            ];
+            return randomPivots[Math.floor(Math.random() * randomPivots.length)];
+        }
+
+        const speakerLabel = document.getElementById('speaker-label');
+
+        /* Listen for Enter key */
+        jokeInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                handleSubmit();
+            }
+        });
+
+        function startShow() {
+            currentLineIndex = 0;
+            currentSpeaker = 'boke';
+            inputArea.classList.remove('active');
+            updateUIForSpeaker();
+
+            setTimeout(() => {
+                stage.classList.add('open');
+                setTimeout(() => {
+                    inputArea.classList.add('active');
+                    jokeInput.focus();
+                }, 1000);
+            }, 500);
+            updateMeter();
+        }
+
+        function updateUIForSpeaker() {
+            if (currentSpeaker === 'boke') {
+                speakerLabel.innerText = "ボケの台詞を入力";
+                speakerLabel.style.background = "#f1c40f";
+                speakerLabel.style.color = "#000";
+                jokeInput.placeholder = "面白いボケを入力してや！";
+                actionBtn.innerText = "ボケる！";
+            } else {
+                speakerLabel.innerText = "ツッコミを入力";
+                speakerLabel.style.background = "#e74c3c";
+                speakerLabel.style.color = "#fff";
+                jokeInput.placeholder = "キレのあるツッコミを！";
+                actionBtn.innerText = "突っ込む！";
+            }
+            jokeInput.value = "";
+            jokeInput.focus();
+        }
+
+        function handleSubmit() {
+            const text = jokeInput.value.trim();
+            if (!text) return;
+
+            if (currentSpeaker === 'boke') {
+                submitBoke(text);
+            } else {
+                submitTsukkomi(text);
+            }
+        }
+
+        function submitBoke(text) {
+            lastBokeText = text;
+            playerBubble.classList.remove('visible'); // Clear old tsukkomi
+            showBubble(partnerBubble, text);
+
+            // Boke Animation
+            partnerEl.style.animation = "none";
+            partnerEl.style.transform = "scale(1.1) rotate(-8deg) translateY(-20px)";
+            setTimeout(() => {
+                partnerEl.style.transform = "scale(1) rotate(0) translateY(0)";
+                partnerEl.style.animation = "idle 3s ease-in-out infinite";
+            }, 600);
+
+            currentSpeaker = 'tsukkomi';
+            updateUIForSpeaker();
+        }
+
+        function submitTsukkomi(retort) {
+            if (retort.includes("もうええわ") || retort.includes("もういいわ")) {
+                showBubble(playerBubble, retort);
+                setTimeout(() => {
+                    showBubble(partnerBubble, "もうええわー！ありがとうございましたー！");
+                    setTimeout(endShow, 2000);
+                }, 1000);
+                return;
+            }
+
+            showBubble(playerBubble, retort);
+
+            // Tsukkomi Animation
+            playerEl.style.animation = "none";
+            playerEl.style.transform = "translateX(-40px) rotate(-15deg) scale(1.3) translateY(-15px)";
+            setTimeout(() => {
+                playerEl.style.transform = "translateX(0) rotate(0) scale(1) translateY(0)";
+                playerEl.style.animation = "idle 3s ease-in-out infinite";
+            }, 400);
+
+            // --- "Real Funniness" Judging Logic ---
+            const bokeTextLower = lastBokeText.toLowerCase();
+            const retortLower = retort.toLowerCase();
+            let score = 25; // Base score (Neutral)
+
+            // 1. Keyword Correlation (Logical connection)
+            const bokeKeywords = bokeTextLower.match(/[一-龠ぁ-んァ-ヶ]{2,}/g) || [];
+            let matchCount = 0;
+            bokeKeywords.forEach(kw => {
+                if (retortLower.includes(kw)) matchCount++;
+            });
+            score += Math.min(matchCount * 25, 70); // High reward for connecting the dots
+
+            // 2. Artistic Tsukkomi Patterns (Classic comedy style)
+            if (retortLower.match(/やかましい|なんでやねん|どないやねん|ええ加減にしろ|ボケ倒すな|関係ないわ/)) score += 20;
+            if (retortLower.match(/！|!|？|\?/)) score += 8;
+            if (retortLower.match(/やん|ねん|やろ|な！|か！/)) score += 12;
+
+            // 3. Sentence Structure & Length
+            if (retort.length >= 6 && retort.length <= 22) score += 10; // "Just right" length
+            if (retort.length < 3) score -= 15; // Too brief is lazy
+
+            // 4. Critical Penalty (Boring reaction / Repetition)
+            if (retortLower.match(/へー|そうなんだ|なるほど|ふーん|へぇ|そっか|あそう/)) score -= 50;
+
+            // Penalty for exactly repeating the Boke's words (Mimicry)
+            if (lastBokeText.length > 5 && retortLower.includes(bokeTextLower)) score -= 30;
+
+            // 5. Minimal natural variance
+            score += Math.floor(Math.random() * 6);
+
+            // Final Clamp
+            score = Math.min(100, Math.max(0, score));
+
+            laughScore = Math.floor((laughScore * 0.5) + (score * 0.5));
+            updateMeter();
+
+            currentSpeaker = 'boke';
+            setTimeout(updateUIForSpeaker, 2000);
+        }
+
+        function showBubble(el, text) {
+            el.innerText = text;
+            el.classList.add('visible');
+        }
+
+        function showFeedback(text) {
+            feedbackEl.innerText = text;
+            feedbackEl.classList.add('show');
+            setTimeout(() => feedbackEl.classList.remove('show'), 1000);
+        }
+
+        function updateMeter() {
+            laughFill.style.width = laughScore + '%';
+            if (laughScore > 80) laughFill.style.background = 'linear-gradient(90deg, #ff9ff3, #f368e0)';
+            else if (laughScore < 30) laughFill.style.background = '#333';
+            else laughFill.style.background = 'linear-gradient(90deg, #f1c40f, #e74c3c)';
+        }
+
+        function endShow() {
+            partnerBubble.classList.remove('visible');
+            playerBubble.classList.remove('visible');
+            feedbackEl.innerText = "ネタ終了！審査発表！";
+            feedbackEl.classList.add('show');
+
+            // Get Elements
+            const panel = document.getElementById('judges-panel');
+            const resultBox = document.getElementById('final-result');
+
+            // Generate content
+            panel.innerHTML = '';
+            const judges = [
+                { name: '審査員A', icon: '🥸' },
+                { name: '審査員B', icon: '👩‍🎤' },
+                { name: '審査員C', icon: '👨‍⚖️' },
+                { name: '審査員D', icon: '🕵️‍♂️' },
+                { name: '審査員E', icon: '👴' },
+                { name: '審査員F', icon: '👱‍♀️' },
+                { name: '審査員G', icon: '🐰' }
+            ];
+            let total = 0;
+
+            setTimeout(() => { panel.classList.add('visible'); }, 500);
+
+            judges.forEach((judge, i) => {
+                const div = document.createElement('div');
+                div.className = 'judge';
+                let variation = Math.floor(Math.random() * 11) - 5; // -5 to +5
+                let s = Math.min(100, Math.max(0, laughScore + variation));
+
+                div.innerHTML = `
+                    <div class="judge-face">${judge.icon}</div>
+                    <div class="judge-name">${judge.name}</div>
+                    <div class="score-board" id="score-${i}">??</div>
+                `;
+                panel.appendChild(div);
+
+                // Animate Score Reveal
+                setTimeout(() => {
+                    const sb = document.getElementById(`score-${i}`);
+                    sb.innerText = s;
+
+                    const val = parseInt(sb.innerText);
+                    total += val;
+                    sb.style.color = val >= 90 ? "#e74c3c" : "#f1c40f";
+                    sb.style.transform = "scale(1.2)";
+                    setTimeout(() => sb.style.transform = "scale(1)", 200);
+                }, 1500 + i * 800);
+            });
+
+            // Show Final Result
+            setTimeout(() => {
+                const totalEl = document.getElementById('total-points');
+                const rankEl = document.getElementById('rank-msg');
+                const resultBox = document.getElementById('final-result');
+
+                let current = 0;
+                const interval = setInterval(() => {
+                    current += 7;
+                    if (current >= total) {
+                        current = total;
+                        clearInterval(interval);
+
+                        if (total >= 600) {
+                            rankEl.innerHTML = "<span style='color:#e74c3c'>最終決戦進出決定！！</span><br><button onclick='startFinalBattle()' style='margin-top:10px; padding:5px 15px; cursor:pointer;'>最終決戦へ</button>";
+                        } else if (total >= 450) {
+                            rankEl.innerText = "惜しい！あと一歩及ばず！";
+                        } else {
+                            rankEl.innerText = "まだまだ修行が必要やな...";
+                        }
+                    }
+                    totalEl.innerText = current + "点";
+                }, 20);
+
+                resultBox.classList.add('show');
+            }, 1000 + judges.length * 800 + 500);
+        }
+
+        function startFinalBattle() {
+            document.getElementById('final-result').classList.remove('show');
+            const overlay = document.getElementById('final-battle-overlay');
+            overlay.classList.add('show');
+
+            const rivals = ['takeru', 'kakeru', 'wataru'];
+            const judges = [
+                { name: '審査員A', icon: '🥸' },
+                { name: '審査員B', icon: '👩‍🎤' },
+                { name: '審査員C', icon: '👨‍⚖️' },
+                { name: '審査員D', icon: '🕵️‍♂️' },
+                { name: '審査員E', icon: '👴' },
+                { name: '審査員F', icon: '👱‍♀️' },
+                { name: '審査員G', icon: '🐰' }
+            ];
+            let votes = { takeru: 0, kakeru: 0, wataru: 0 };
+
+            judges.forEach((judge, i) => {
+                setTimeout(() => {
+                    const face = judge.icon;
+                    // Logic: Merit-based voting (No guaranteed win)
+                    let pool = ['takeru', 'kakeru', 'wataru'];
+                    if (laughScore > 85) pool.push('takeru', 'takeru');
+                    else if (laughScore < 45) pool.push('kakeru', 'wataru', 'kakeru', 'wataru');
+
+                    const choice = pool[Math.floor(Math.random() * pool.length)];
+                    votes[choice]++;
+
+                    const iconWrap = document.getElementById(`votes-${choice}`);
+                    const span = document.createElement('span');
+                    span.className = 'voter-icon';
+                    span.innerText = face;
+                    iconWrap.appendChild(span);
+
+                    document.getElementById(`count-${choice}`).innerText = votes[choice];
+
+                    // Highlight current leader or voter's choice
+                    document.querySelectorAll('.rival').forEach(r => r.classList.remove('active'));
+                    document.getElementById(`rival-${choice}`).classList.add('active');
+
+                    // If last vote
+                    if (i === judges.length - 1) {
+                        setTimeout(() => showWinner(votes), 1000);
+                    }
+                }, 1000 + i * 1200);
+            });
+        }
+
+        function showWinner(votes) {
+            const resEl = document.getElementById('battle-result');
+            const btn = document.getElementById('restart-btn');
+
+            let winner = 'takeru';
+            if (votes.kakeru > votes.takeru && votes.kakeru > votes.wataru) winner = 'kakeru';
+            if (votes.wataru > votes.takeru && votes.wataru > votes.kakeru) winner = 'wataru';
+
+            if (winner === 'takeru') {
+                resEl.innerHTML = "🏆 優勝：たける！！ 🏆<br><span style='font-size:1.5rem'>おめでとう！伝説の称号を獲得したで！</span>";
+                resEl.style.color = "#f1c40f";
+            } else {
+                const names = { kakeru: 'かける', wataru: 'わたる' };
+                resEl.innerHTML = `優勝：${names[winner]}...<br><span style='font-size:1.5rem'>残念！来年は絶対勝とうな！</span>`;
+                resEl.style.color = "#bdc3c7";
+            }
+            btn.style.display = "block";
+        }
+
+
+        window.onload = startShow;
+    </script>
+</body>
+
+</html>

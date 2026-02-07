@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Takeru | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎙️</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="navbar">
+        <div class="logo">takeru</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#works">Works</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-bg">
+            <img src="assets/profile_bg.png" alt="Background">
+            <div class="overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="glitch" data-text="takeru">takeru</h1>
+            <p class="subtitle">Creative Developer & Designer</p>
+            <div class="scroll-indicator">
+                <span></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">自己紹介</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>
+                        初めまして、takeruです。
+                        クリエイティブな作品を作ることが好きです。
+                        このサイトでは、私も作品の一部を紹介しています。
+                    </p>
+                </div>
+                <div class="about-skills">
+                    <h3>Skills</h3>
+                    <div class="skill-tags">
+                        <span>HTML5 & CSS3</span>
+                        <span>JavaScript (ES6+)</span>
+                        <span>Game Development</span>
+                        <span>UI/UX Design</span>
+                        <span>WebGL / Three.js</span>
+                        <span>Creative Coding</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="works" class="works">
+        <div class="container">
+            <h2 class="section-title">Selected Works</h2>
+            <div class="works-grid">
+                <!-- Project 1 -->
+                <article class="work-card">
+                    <a href="breakout.html" class="work-link">
+                        <div class="work-image">
+                            <img src="assets/breakout_thumb.png" alt="Neon Breakout">
+                            <div class="work-overlay">
+                                <span>Play Game</span>
+                            </div>
+                        </div>
+                        <div class="work-info">
+                            <h3>Neon Breakout</h3>
+                            <p>HTML5 Canvasで作られた、<br>ネオン輝くブロック崩しゲーム。</p>
+                            <div class="tags">
+                                <span class="tag">JavaScript</span>
+                                <span class="tag">Canvas API</span>
+                                <span class="tag">Arcade</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Project 2 -->
+                <article class="work-card">
+                    <a href="world_ball.html" class="work-link">
+                        <div class="work-image">
+                            <img src="assets/work_game.png" alt="Globe Runner">
+                            <div class="work-overlay">
+                                <span>Play Game</span>
+                            </div>
+                        </div>
+                        <div class="work-info">
+                            <h3>Globe Runner</h3>
+                            <p>世界一周！<br>地球の上を転がり続ける3Dアクション。</p>
+                            <div class="tags">
+                                <span class="tag">Three.js</span>
+                                <span class="tag">3D</span>
+                                <span class="tag">Action</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Project 3 -->
+                <article class="work-card">
+                    <a href="simple_action.html" class="work-link">
+                        <div class="work-image">
+                            <img src="assets/simple_action_thumb.png" alt="爆笑！お笑いライブ">
+                            <div class="work-overlay">
+                                <span>Play Game</span>
+                            </div>
+                        </div>
+                        <div class="work-info">
+                            <h3>爆笑！お笑いライブ</h3>
+                            <p>「たける」として頂点を目指せ！<br>リアルタイム判定の漫才アクション。</p>
+                            <div class="tags">
+                                <span class="tag">JavaScript</span>
+                                <span class="tag">Comedy</span>
+                                <span class="tag">Interective</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>&copy; 2026 takeru. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
