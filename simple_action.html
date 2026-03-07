@@ -23,11 +23,35 @@
             position: relative;
             width: 1000px;
             height: 750px;
-            background: radial-gradient(circle at 50% 80%, #fff 0%, #f1c40f 20%, #e67e22 50%, #2c3e50 90%);
+            background: #2c3e50;
+            /* Wall color */
             border: 10px solid #c0392b;
             border-radius: 20px;
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
             overflow: hidden;
+        }
+
+        /* Wooden Floor */
+        #stage-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(0deg, #5d4037 0%, #8d6e63 100%);
+            border-top: 4px solid #3e2723;
+            z-index: 2;
+            box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #stage-floor::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0, 0, 0, 0.1) 40px, rgba(0, 0, 0, 0.1) 45px);
         }
 
         /* Curtain */
@@ -52,11 +76,11 @@
         }
 
         .open .curtain-left {
-            transform: scaleX(0.1);
+            transform: translateX(-105%) rotate(-5deg);
         }
 
         .open .curtain-right {
-            transform: scaleX(0.1);
+            transform: translateX(105%) rotate(5deg);
         }
 
         /* Spotlight */
@@ -75,17 +99,164 @@
         /* Characters */
         .character {
             position: absolute;
-            bottom: 50px;
-            width: 150px;
-            height: 300px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            height: 250px;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            bottom: 180px;
+            /* Adjusted slightly down for more headroom */
             display: flex;
             flex-direction: column;
             align-items: center;
+            z-index: 500;
+            transition: all 0.8s ease-out;
             animation: idle 3s ease-in-out infinite;
+            opacity: 1;
+            overflow: visible;
+            /* Crucial: show head outside body */
+        }
+
+        #partner {
+            left: 32%;
+            transform: translateX(-300px);
+        }
+
+        /* Start off-stage left */
+        #player {
+            right: 32%;
+            transform: translateX(300px);
+        }
+
+        /* Start off-stage right */
+
+        .character.ready {
+            transform: translateX(0);
+        }
+
+        /* Bowing Animation (Rei) */
+        @keyframes bow-action {
+            0% {
+                transform: rotateX(0deg);
+            }
+
+            50% {
+                transform: rotateX(35deg);
+            }
+
+            100% {
+                transform: rotateX(0deg);
+            }
+        }
+
+        .bowing .geinin-body-box {
+            animation: bow-action 1.2s ease-in-out;
+            transform-origin: bottom center;
+        }
+
+        /* Full Body Suit System */
+        .geinin-body-box {
+            position: relative;
+            background: #333;
+            border: 3px solid #000;
+            border-radius: 20px 20px 5px 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            overflow: visible;
+            /* Crucial for absolute positioned children like the head */
+        }
+
+        /* Boke: Short and stout in Formal Shikifuku */
+        #partner .geinin-body-box {
+            width: 150px;
+            height: 180px;
+            background: #1e272e;
+            /* Formal Black */
+        }
+
+        /* Tsukkomi: Tall and slim in Formal Shikifuku */
+        #player .geinin-body-box {
+            width: 100px;
+            height: 300px;
+            background: #1e272e;
+            /* Formal Black */
+        }
+
+        /* Formal Shirt Detail (White V-neck) */
+        .geinin-body-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 40%;
+            background: #fff;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            z-index: 1;
+        }
+
+        /* Bow Tie Detail */
+        .geinin-body-box::after {
+            content: '🎀';
+            /* Simple bow tie emoji or stylized shape */
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            z-index: 2;
+        }
+
+        /* Legs (Formal Trousers) */
+        .leg {
+            position: absolute;
+            bottom: -60px;
+            width: 32px;
+            height: 65px;
+            background: #1e272e;
+            border: 3px solid #000;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .leg-l {
+            left: 10%;
+        }
+
+        .leg-r {
+            right: 10%;
+        }
+
+        /* Shoes */
+        .leg::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -5px;
+            width: 45px;
+            height: 15px;
+            background: #000;
+            border-radius: 10px 5px 5px 5px;
+        }
+
+        /* Head with Real Face */
+        .geinin-head-box {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 110px;
+            background: #ffeaa7;
+            border: 4px solid #000;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 300;
+            /* HIGH: Must be above shirt collar and bubble BASE */
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .geinin-head-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         @keyframes idle {
@@ -100,53 +271,19 @@
             }
         }
 
-        /* Simple CSS Geinin shapes */
-        .geinin-body {
+        /* Floor shadow */
+        .character::after {
+            content: '';
             position: absolute;
-            bottom: 0;
-            width: 100px;
-            height: 180px;
-            border-radius: 10px;
-            left: 25px;
-        }
-
-        .geinin-head {
-            position: absolute;
-            top: 20px;
-            left: 15px;
-            width: 120px;
-            height: 120px;
+            bottom: -65px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            filter: blur(10px);
             border-radius: 50%;
-            background: #ffeaa7;
-            border: 3px solid #000;
-        }
-
-        .geinin-face {
-            position: absolute;
-            top: 40px;
-            left: 30px;
-            font-size: 30px;
-        }
-
-        .suit-blue {
-            background: #0984e3;
-            border: 3px solid #000;
-        }
-
-        .suit-red {
-            background: #d63031;
-            border: 3px solid #000;
-        }
-
-        #partner {
-            left: 20%;
-            animation-delay: 0s;
-        }
-
-        /* Boke */
-        #player {
-            right: 20%;
-            animation-delay: 0.5s;
+            z-index: -1;
         }
 
         /* Tsukkomi */
@@ -154,13 +291,16 @@
         /* Mic Stand */
         #mic {
             position: absolute;
-            bottom: 50px;
+            bottom: 170px;
+            /* Matched to geinin ground level */
             left: 50%;
             transform: translateX(-50%);
             width: 10px;
             height: 250px;
             background: #95a5a6;
-            z-index: 10;
+            z-index: 100;
+            /* In front of geinin slightly */
+            border: 2px solid #333;
         }
 
         #mic::before {
@@ -178,8 +318,8 @@
         /* Speech Bubbles - Attached to characters */
         .bubble {
             position: absolute;
-            bottom: 320px;
-            /* Above the character head */
+            top: -280px;
+            /* Moved even higher to avoid ANY head collision */
             left: 50%;
             transform: translateX(-50%) translateY(20px);
             background: #fff;
@@ -251,11 +391,12 @@
             transform: translateX(-50%);
             display: flex;
             gap: 10px;
-            z-index: 30;
+            z-index: 2000;
+            /* HIGHEST Z-INDEX to ensure it's on top */
             transition: bottom 0.3s;
             width: 80%;
             max-width: 600px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 15px;
             border-radius: 15px;
             border: 3px solid #333;
@@ -353,19 +494,240 @@
             mask-image: linear-gradient(to bottom, transparent, black);
         }
 
-        /* Judges Panel CSS (Injected here) */
+        /* Realistic Audience Theater Cut-away */
+        #audience-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 3000;
+            /* Higher than input-area (2000) to cover entire screen */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-in;
+            pointer-events: none;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        #audience-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* TV Program style "LIVE" indicator */
+        #audience-overlay::after {
+            content: '● LIVE 会場客席';
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #fff;
+            background: rgba(255, 0, 0, 0.8);
+            padding: 5px 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            z-index: 210;
+        }
+
+        /* Variety Show Telop (Caption) */
+        .variety-telop {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+            font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+            font-weight: 900;
+            font-size: 4rem;
+            color: #f1c40f;
+            -webkit-text-stroke: 3px #000;
+            text-shadow: 4px 4px 0px #e74c3c;
+            z-index: 220;
+            opacity: 0;
+            transform: translateX(-50%) scale(0.5);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #audience-overlay.show .variety-telop {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .audience-row {
+            display: flex;
+            justify-content: center;
+            width: 150%;
+            /* Wider than screen for perspective */
+            margin-bottom: -40px;
+        }
+
+        .audience-member {
+            position: relative;
+            width: 110px;
+            height: 140px;
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* Dark theater seats */
+        .audience-seat {
+            position: absolute;
+            bottom: 0;
+            width: 100px;
+            height: 60px;
+            background: #2c3e50;
+            border-top: 5px solid #34495e;
+            border-radius: 10px 10px 0 0;
+            z-index: 10;
+        }
+
+        .audience-face {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            overflow: hidden;
+            z-index: 20;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            animation: audience-laugh-shake 0.2s ease-in-out infinite;
+        }
+
+        .audience-face img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.1) brightness(1.1);
+        }
+
+        /* Floating Laugh Particles */
+        .laugh-text {
+            position: absolute;
+            color: #f1c40f;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px #000;
+            white-space: nowrap;
+            z-index: 40;
+            pointer-events: none;
+            animation: float-laugh 1.5s ease-out forwards;
+        }
+
+        @keyframes float-laugh {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) scale(1.2) rotate(10deg);
+                opacity: 0;
+            }
+        }
+
+        /* Row perspective and lighting */
+        .audience-row:nth-child(1) {
+            transform: scale(0.5) translateY(-100px);
+            filter: brightness(0.4);
+            z-index: 5;
+        }
+
+        .audience-row:nth-child(2) {
+            transform: scale(0.65) translateY(-70px);
+            filter: brightness(0.6);
+            z-index: 10;
+        }
+
+        .audience-row:nth-child(3) {
+            transform: scale(0.8) translateY(-40px);
+            filter: brightness(0.8);
+            z-index: 15;
+        }
+
+        .audience-row:nth-child(4) {
+            transform: scale(1);
+            filter: brightness(1.1);
+            z-index: 20;
+        }
+
+        @keyframes audience-laugh-shake {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.05) rotate(2deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(-1deg);
+            }
+        }
+
+        @keyframes audience-sway {
+            from {
+                transform: rotate(-2deg);
+            }
+
+            to {
+                transform: rotate(2deg);
+            }
+        }
+
+        .audience-member {
+            animation: audience-sway 5s ease-in-out infinite alternate;
+        }
+
+        /* Stage glare overlay */
+        .stage-glare {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(241, 196, 15, 0.2) 0%, transparent 100%);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        @keyframes audience-move {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Judges Panel CSS (Simplified) */
         #judges-panel {
             position: absolute;
             bottom: -200px;
             left: 50%;
             transform: translateX(-50%);
-            width: 700px;
+            width: 800px;
             display: flex;
             justify-content: space-around;
-            background: #222;
-            border: 4px solid #fff;
+            background: rgba(20, 20, 20, 0.9);
+            border: 3px solid #f1c40f;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
             z-index: 50;
             transition: bottom 0.5s;
         }
@@ -383,28 +745,30 @@
         }
 
         .judge-face {
-            font-size: 30px;
-            margin-bottom: 5px;
+            display: none;
+            /* Keep face photos hidden as requested before */
         }
 
         .judge-name {
-            font-size: 10px;
+            display: flex;
+            /* Show names again */
+            font-size: 11px;
             font-weight: bold;
             text-align: center;
             margin-bottom: 5px;
             height: 2.4em;
-            display: flex;
             align-items: center;
             justify-content: center;
+            color: #f1c40f;
         }
 
         .score-board {
-            width: 60px;
-            height: 40px;
+            width: 70px;
+            height: 50px;
             background: #000;
             color: #e74c3c;
             font-family: 'Courier New', monospace;
-            font-size: 24px;
+            font-size: 30px;
             font-weight: bold;
             display: flex;
             justify-content: center;
@@ -516,6 +880,60 @@
         .voter-icon {
             font-size: 1.5rem;
         }
+
+        /* Tsukkomi Score Popup */
+        #tsukkomi-score {
+            position: absolute;
+            top: 180px;
+            right: 12%;
+            z-index: 150;
+            opacity: 0;
+            transform: scale(0.5) rotate(-15deg);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.6));
+        }
+
+        #tsukkomi-score.show {
+            opacity: 1;
+            transform: scale(1) rotate(5deg);
+        }
+
+        .score-level {
+            font-size: 1.2rem;
+            color: #fff;
+            background: #e67e22;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-weight: 800;
+            margin-bottom: -10px;
+            z-index: 2;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .score-val {
+            font-size: 6rem;
+            font-weight: 900;
+            color: #f1c40f;
+            text-shadow: 4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .score-rank {
+            font-size: 1.8rem;
+            background: #000;
+            color: #fff;
+            padding: 5px 20px;
+            border-radius: 30px;
+            margin-top: -15px;
+            font-weight: bold;
+            border: 3px solid #f1c40f;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -526,6 +944,7 @@
         <div class="curtain curtain-left" id="c-left"></div>
         <div class="curtain curtain-right" id="c-right"></div>
 
+        <div id="stage-floor"></div>
         <div class="spotlight"></div>
         <div class="laugh-label">爆笑度</div>
         <div id="laugh-meter">
@@ -533,6 +952,11 @@
         </div>
 
         <div id="feedback">ドッカン！</div>
+        <div id="tsukkomi-score">
+            <span class="score-level">LV.5</span>
+            <span class="score-val">85</span>
+            <span class="score-rank">キレッキレ！</span>
+        </div>
         <div id="group-tag">コンビ名：たける</div>
 
         <!-- Final Battle Overlay -->
@@ -567,10 +991,12 @@
 
         <div id="partner" class="character">
             <div id="partner-bubble" class="bubble">...</div>
-            <div class="geinin-body suit-blue"></div>
-            <div class="geinin-head">
-                <img src="https://randomuser.me/api/portraits/men/14.jpg" alt="Partner"
-                    style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            <div class="geinin-body-box">
+                <div class="geinin-head-box">
+                    <img src="https://randomuser.me/api/portraits/men/14.jpg" alt="Partner Face">
+                </div>
+                <div class="leg leg-l"></div>
+                <div class="leg leg-r"></div>
             </div>
         </div>
 
@@ -578,11 +1004,19 @@
 
         <div id="player" class="character">
             <div id="player-bubble" class="bubble">...</div>
-            <div class="geinin-body suit-red"></div>
-            <div class="geinin-head">
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Player"
-                    style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            <div class="geinin-body-box">
+                <div class="geinin-head-box">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Player Face">
+                </div>
+                <div class="leg leg-l"></div>
+                <div class="leg leg-r"></div>
             </div>
+        </div>
+
+        <div id="audience-overlay">
+            <div class="stage-glare"></div>
+            <div class="variety-telop" id="audience-telop">ドッカン！</div>
+            <div id="audience-scroller"></div>
         </div>
 
         <div class="audience"></div>
@@ -627,6 +1061,8 @@
         let currentLineIndex = 0;
         let currentSpeaker = 'boke'; // 'boke' or 'tsukkomi'
         let lastBokeText = "";
+        let sessionScores = []; // Track all tsukkomi scores
+        let lastAudienceTime = 0; // Fixed: Track audience reveal timing
 
         // Fully Dynamic Topic Generation System
         let currentTopic = "game";
@@ -652,8 +1088,8 @@
             // Random Pivot based on retort length or keywords
             const randomPivots = [
                 `お前が「${retort}」って言うから思い出したわ！その作品、空から「たこ焼き」が降ってくるシーンがあるらしいねん。`,
-                "そうそう、その感じや！でもな、オカンが言うには「主食がプロテイン」の物語らしいわ。",
-                "いや、それより聞いてや。その主人公、移動手段が「セグウェイ」らしいねん。"
+                "そうそう、その感じや！でもな、オカンが言うには「主食がプロテイン」の物語らしいわ.",
+                "いや、それより聞いてや。その主人公、移動手段が「セグウェイ」らしいねん."
             ];
             return randomPivots[Math.floor(Math.random() * randomPivots.length)];
         }
@@ -677,11 +1113,92 @@
             setTimeout(() => {
                 stage.classList.add('open');
                 setTimeout(() => {
-                    inputArea.classList.add('active');
-                    jokeInput.focus();
+                    // Make geinin walk in
+                    partnerEl.classList.add('ready');
+                    playerEl.classList.add('ready');
+
+                    // Formal Bow (Rei) after walking in
+                    setTimeout(() => {
+                        partnerEl.classList.add('bowing');
+                        playerEl.classList.add('bowing');
+
+                        // Clear bowing class after animation finishes
+                        setTimeout(() => {
+                            partnerEl.classList.remove('bowing');
+                            playerEl.classList.remove('bowing');
+                        }, 1200);
+                    }, 1000);
+
+                    setTimeout(() => {
+                        inputArea.classList.add('active');
+                        jokeInput.focus();
+                    }, 2500);
                 }, 1000);
             }, 500);
             updateMeter();
+
+            // Initialize audience overlay content (Realistic People in Theater)
+            const scroller = document.getElementById('audience-scroller');
+            scroller.innerHTML = '';
+
+            for (let r = 0; r < 4; r++) {
+                const row = document.createElement('div');
+                row.className = 'audience-row';
+                const count = 8 + r * 2;
+                for (let i = 0; i < count; i++) {
+                    const member = document.createElement('div');
+                    member.className = 'audience-member';
+                    member.style.animationDelay = `${Math.random() * 0.5}s`;
+
+                    // Real Human Face Portals (Selection of high-quality thumbnails)
+                    const gender = Math.random() > 0.5 ? 'men' : 'women';
+                    const userId = Math.floor(Math.random() * 70);
+                    const imgUrl = `https://randomuser.me/api/portraits/${gender}/${userId}.jpg`;
+
+                    member.innerHTML = `
+                        <div class="audience-face"><img src="${imgUrl}" alt="Laughing Audience"></div>
+                        <div class="audience-seat"></div>
+                        <div class="stage-reflection"></div>
+                    `;
+                    row.appendChild(member);
+                }
+                scroller.appendChild(row);
+            }
+        }
+
+        function revealAudience(score) {
+            const overlay = document.getElementById('audience-overlay');
+            const telop = document.getElementById('audience-telop');
+            const scroller = document.getElementById('audience-scroller');
+
+            let telopText = "";
+            let animSpeed = "0.2s";
+
+            if (score > 85) {
+                telopText = "ドッカン！爆笑！！";
+                scroller.style.filter = "brightness(1.2)";
+                animSpeed = "0.15s";
+            } else if (score >= 40) {
+                telopText = "ウケた！";
+                scroller.style.filter = "brightness(1)";
+                animSpeed = "0.4s";
+            } else {
+                telopText = "シーン...";
+                scroller.style.filter = "brightness(0.5) sepia(0.5)";
+                animSpeed = "0s"; // Stop shaking
+            }
+
+            telop.innerText = telopText;
+
+            // Adjust animation for all members
+            document.querySelectorAll('.audience-face').forEach(face => {
+                face.style.animationDuration = animSpeed;
+            });
+
+            overlay.classList.add('show');
+            setTimeout(() => {
+                overlay.classList.remove('show');
+            }, 2500);
         }
 
         function updateUIForSpeaker() {
@@ -719,11 +1236,12 @@
             showBubble(partnerBubble, text);
 
             // Boke Animation
-            partnerEl.style.animation = "none";
-            partnerEl.style.transform = "scale(1.1) rotate(-8deg) translateY(-20px)";
+            const p = document.getElementById('partner');
+            p.style.animation = "none";
+            p.style.transform = "scale(1.1) rotate(-8deg) translateY(-20px)";
             setTimeout(() => {
-                partnerEl.style.transform = "scale(1) rotate(0) translateY(0)";
-                partnerEl.style.animation = "idle 3s ease-in-out infinite";
+                p.style.transform = "scale(1) rotate(0) translateY(0)";
+                p.style.animation = "idle 3s ease-in-out infinite";
             }, 600);
 
             currentSpeaker = 'tsukkomi';
@@ -731,10 +1249,14 @@
         }
 
         function submitTsukkomi(retort) {
-            if (retort.includes("もうええわ") || retort.includes("もういいわ")) {
+            // Check for ending the show
+            if (retort.match(/もうええわ|もういいわ|ありがとうございました|終わろ|ストップ/)) {
                 showBubble(playerBubble, retort);
+                inputArea.classList.remove('active'); // Hide input
                 setTimeout(() => {
                     showBubble(partnerBubble, "もうええわー！ありがとうございましたー！");
+                    // Flash feedback
+                    showFeedback("ネタ終了！！");
                     setTimeout(endShow, 2000);
                 }, 1000);
                 return;
@@ -743,49 +1265,102 @@
             showBubble(playerBubble, retort);
 
             // Tsukkomi Animation
-            playerEl.style.animation = "none";
-            playerEl.style.transform = "translateX(-40px) rotate(-15deg) scale(1.3) translateY(-15px)";
+            const pl = document.getElementById('player');
+            pl.style.animation = "none";
+            pl.style.transform = "translateX(-40px) rotate(-15deg) scale(1.1) translateY(-15px)";
             setTimeout(() => {
-                playerEl.style.transform = "translateX(0) rotate(0) scale(1) translateY(0)";
-                playerEl.style.animation = "idle 3s ease-in-out infinite";
+                pl.style.transform = "translateX(0) rotate(0) scale(1) translateY(0)";
+                pl.style.animation = "idle 3s ease-in-out infinite";
             }, 400);
 
-            // --- "Real Funniness" Judging Logic ---
-            const bokeTextLower = lastBokeText.toLowerCase();
-            const retortLower = retort.toLowerCase();
-            let score = 25; // Base score (Neutral)
+            // --- Check if this is a "Scoring Tsukkomi" ---
+            // Only evaluate if it contains '!' or '！'
+            const isScoring = retort.includes('！') || retort.includes('!');
 
-            // 1. Keyword Correlation (Logical connection)
-            const bokeKeywords = bokeTextLower.match(/[一-龠ぁ-んァ-ヶ]{2,}/g) || [];
-            let matchCount = 0;
-            bokeKeywords.forEach(kw => {
-                if (retortLower.includes(kw)) matchCount++;
-            });
-            score += Math.min(matchCount * 25, 70); // High reward for connecting the dots
+            if (isScoring) {
+                // --- "Real Funniness" Judging Logic ---
+                const bokeTextLower = lastBokeText.toLowerCase();
+                const retortLower = retort.toLowerCase();
+                let score = 25; // Base score (Neutral)
 
-            // 2. Artistic Tsukkomi Patterns (Classic comedy style)
-            if (retortLower.match(/やかましい|なんでやねん|どないやねん|ええ加減にしろ|ボケ倒すな|関係ないわ/)) score += 20;
-            if (retortLower.match(/！|!|？|\?/)) score += 8;
-            if (retortLower.match(/やん|ねん|やろ|な！|か！/)) score += 12;
+                // 1. Keyword Correlation (Logical connection)
+                const bokeKeywords = bokeTextLower.match(/[一-龠ぁ-んァ-ヶ]{2,}/g) || [];
+                let matchCount = 0;
+                bokeKeywords.forEach(kw => {
+                    if (retortLower.includes(kw)) matchCount++;
+                });
+                score += Math.min(matchCount * 25, 70); // High reward for connecting the dots
 
-            // 3. Sentence Structure & Length
-            if (retort.length >= 6 && retort.length <= 22) score += 10; // "Just right" length
-            if (retort.length < 3) score -= 15; // Too brief is lazy
+                // 2. Artistic Tsukkomi Patterns (Classic comedy style)
+                const patterns = [
+                    { reg: /なんでやねん|どないやねん|何してんねん|おかしいやろ/, bonus: 25 },
+                    { reg: /やかましい|うるさい|黙れ|ええ加減にしろ|ボケ倒すな/, bonus: 20 },
+                    { reg: /関係ないわ|知らんわ|誰がや|嘘つけ|違うわ/, bonus: 15 },
+                    { reg: /！|!|？|\?/, bonus: 10 },
+                    { reg: /やん|ねん|やろ|な！|か！/, bonus: 12 }
+                ];
 
-            // 4. Critical Penalty (Boring reaction / Repetition)
-            if (retortLower.match(/へー|そうなんだ|なるほど|ふーん|へぇ|そっか|あそう/)) score -= 50;
+                patterns.forEach(p => {
+                    if (retortLower.match(p.reg)) score += p.bonus;
+                });
 
-            // Penalty for exactly repeating the Boke's words (Mimicry)
-            if (lastBokeText.length > 5 && retortLower.includes(bokeTextLower)) score -= 30;
+                // 3. Sentence Structure & Length
+                if (retort.length >= 6 && retort.length <= 25) score += 15; // "Just right" length
+                if (retort.length < 3) score -= 20; // Too brief is lazy
 
-            // 5. Minimal natural variance
-            score += Math.floor(Math.random() * 6);
+                // 4. Critical Penalty (Boring reaction / Repetition)
+                if (retortLower.match(/へー|そうなんだ|なるほど|ふーん|へぇ|そっか|あそう|はい/)) score -= 60;
 
-            // Final Clamp
-            score = Math.min(100, Math.max(0, score));
+                // Penalty for exactly repeating the Boke's words (Mimicry)
+                if (lastBokeText.length > 5 && retortLower.includes(bokeTextLower)) score -= 40;
 
-            laughScore = Math.floor((laughScore * 0.5) + (score * 0.5));
-            updateMeter();
+                // 5. Minimal natural variance
+                score += Math.floor(Math.random() * 10);
+
+                // Final Clamp
+                score = Math.min(100, Math.max(0, score));
+
+                // --- Display Score to User ---
+                const scoreVal = document.querySelector('.score-val');
+                const scoreRank = document.querySelector('.score-rank');
+                const scoreLevel = document.querySelector('.score-level');
+                const scorePop = document.getElementById('tsukkomi-score');
+
+                let rank = "普通やな";
+                let level = 2;
+                if (score >= 95) { rank = "【神回】伝説のツッコミ"; level = 5; }
+                else if (score >= 90) { rank = "天才！神がかってんな！"; level = 5; }
+                else if (score >= 80) { rank = "キレッキレやん！"; level = 4; }
+                else if (score >= 60) { rank = "なかなかええやん"; level = 3; }
+                else if (score >= 40) { rank = "まあ普通やな"; level = 2; }
+                else if (score >= 20) { rank = "ちょっと寒いか？"; level = 1; }
+                else { rank = "意味不明やわ！"; level = 0; }
+
+                scoreVal.innerText = Math.floor(score);
+                scoreRank.innerText = rank;
+                scoreLevel.innerText = `LV.${level}`;
+                scorePop.classList.add('show');
+                setTimeout(() => {
+                    scorePop.classList.remove('show');
+                }, 1800);
+
+                // Update overall performance tracking
+                sessionScores.push(score);
+
+                // Calculate current average/weighted laugh score
+                const avgScore = sessionScores.reduce((a, b) => a + b, 0) / sessionScores.length;
+                laughScore = Math.floor((avgScore + score) / 2); // Mix of average and latest impact
+                updateMeter();
+
+                // Reaction based on score
+                if (score > 85) showFeedback("ドッカン！");
+                else if (score > 60) showFeedback("ウケてる！");
+                else if (score < 30) showFeedback("シーン...");
+
+                revealAudience(score); // Show audience with the calculated score
+            } else {
+                // Just normal talking, no audience reveal
+            }
 
             currentSpeaker = 'boke';
             setTimeout(updateUIForSpeaker, 2000);
@@ -812,8 +1387,10 @@
         function endShow() {
             partnerBubble.classList.remove('visible');
             playerBubble.classList.remove('visible');
+            document.getElementById('tsukkomi-score').classList.remove('show'); // Ensure score pop is hidden
             feedbackEl.innerText = "ネタ終了！審査発表！";
             feedbackEl.classList.add('show');
+
 
             // Get Elements
             const panel = document.getElementById('judges-panel');
@@ -821,28 +1398,37 @@
 
             // Generate content
             panel.innerHTML = '';
-            const judges = [
-                { name: '審査員A', icon: '🥸' },
-                { name: '審査員B', icon: '👩‍🎤' },
-                { name: '審査員C', icon: '👨‍⚖️' },
-                { name: '審査員D', icon: '🕵️‍♂️' },
-                { name: '審査員E', icon: '👴' },
-                { name: '審査員F', icon: '👱‍♀️' },
-                { name: '審査員G', icon: '🐰' }
-            ];
+            // Back to 9 judges
+            const judgesCount = 9;
             let total = 0;
 
             setTimeout(() => { panel.classList.add('visible'); }, 500);
 
-            judges.forEach((judge, i) => {
+            // Use session average for final judging base
+            const finalAverage = sessionScores.length > 0
+                ? sessionScores.reduce((a, b) => a + b, 0) / sessionScores.length
+                : 50;
+
+            for (let i = 0; i < judgesCount; i++) {
                 const div = document.createElement('div');
                 div.className = 'judge';
-                let variation = Math.floor(Math.random() * 11) - 5; // -5 to +5
-                let s = Math.min(100, Math.max(0, laughScore + variation));
+
+                // Refined Judge Scoring Logic based on tiers:
+                let s;
+                if (finalAverage < 45) {
+                    s = 80 + Math.floor(Math.random() * 8);
+                } else if (finalAverage < 70) {
+                    s = 88 + Math.floor(Math.random() * 3);
+                } else if (finalAverage < 88) {
+                    s = 91 + Math.floor(Math.random() * 4);
+                } else if (finalAverage < 98) {
+                    s = 95 + Math.floor(Math.random() * 5);
+                } else {
+                    s = 100;
+                }
 
                 div.innerHTML = `
-                    <div class="judge-face">${judge.icon}</div>
-                    <div class="judge-name">${judge.name}</div>
+                    <div class="judge-name">審査員${i + 1}</div>
                     <div class="score-board" id="score-${i}">??</div>
                 `;
                 panel.appendChild(div);
@@ -854,11 +1440,11 @@
 
                     const val = parseInt(sb.innerText);
                     total += val;
-                    sb.style.color = val >= 90 ? "#e74c3c" : "#f1c40f";
+                    sb.style.color = val >= 95 ? "#e74c3c" : (val >= 91 ? "#f1c40f" : "#fff");
                     sb.style.transform = "scale(1.2)";
                     setTimeout(() => sb.style.transform = "scale(1)", 200);
                 }, 1500 + i * 800);
-            });
+            }
 
             // Show Final Result
             setTimeout(() => {
@@ -873,10 +1459,13 @@
                         current = total;
                         clearInterval(interval);
 
-                        if (total >= 600) {
-                            rankEl.innerHTML = "<span style='color:#e74c3c'>最終決戦進出決定！！</span><br><button onclick='startFinalBattle()' style='margin-top:10px; padding:5px 15px; cursor:pointer;'>最終決戦へ</button>";
-                        } else if (total >= 450) {
-                            rankEl.innerText = "惜しい！あと一歩及ばず！";
+                        // Thresholds adjusted for 9 judges:
+                        // 658+ (Avg 94+) = Final Battle (Legendary range)
+                        // 630+ (Avg 90+) = Close
+                        if (total >= 658) {
+                            rankEl.innerHTML = "<span style='color:#e74c3c'>伝説の領域！！最終決戦へ！</span><br><button onclick='startFinalBattle()' style='margin-top:10px; padding:5px 15px; cursor:pointer;'>最終決戦へ</button>";
+                        } else if (total >= 630) {
+                            rankEl.innerText = "面白い！が、あと少し何かが足りない！";
                         } else {
                             rankEl.innerText = "まだまだ修行が必要やな...";
                         }
@@ -885,7 +1474,7 @@
                 }, 20);
 
                 resultBox.classList.add('show');
-            }, 1000 + judges.length * 800 + 500);
+            }, 1000 + judgesCount * 800 + 500);
         }
 
         function startFinalBattle() {
@@ -893,21 +1482,12 @@
             const overlay = document.getElementById('final-battle-overlay');
             overlay.classList.add('show');
 
-            const rivals = ['takeru', 'kakeru', 'wataru'];
-            const judges = [
-                { name: '審査員A', icon: '🥸' },
-                { name: '審査員B', icon: '👩‍🎤' },
-                { name: '審査員C', icon: '👨‍⚖️' },
-                { name: '審査員D', icon: '🕵️‍♂️' },
-                { name: '審査員E', icon: '👴' },
-                { name: '審査員F', icon: '👱‍♀️' },
-                { name: '審査員G', icon: '🐰' }
-            ];
+            const Rivals = ['takeru', 'kakeru', 'wataru'];
+            const anonymousJudgesCount = 9;
             let votes = { takeru: 0, kakeru: 0, wataru: 0 };
 
-            judges.forEach((judge, i) => {
+            for (let i = 0; i < anonymousJudgesCount; i++) {
                 setTimeout(() => {
-                    const face = judge.icon;
                     // Logic: Merit-based voting (No guaranteed win)
                     let pool = ['takeru', 'kakeru', 'wataru'];
                     if (laughScore > 85) pool.push('takeru', 'takeru');
@@ -919,7 +1499,12 @@
                     const iconWrap = document.getElementById(`votes-${choice}`);
                     const span = document.createElement('span');
                     span.className = 'voter-icon';
-                    span.innerText = face;
+                    span.style.width = '20px';
+                    span.style.height = '20px';
+                    span.style.display = 'inline-block';
+                    span.style.borderRadius = '50%';
+                    span.style.background = '#f1c40f'; // Simple color instead of photo
+                    span.style.border = '1px solid #fff';
                     iconWrap.appendChild(span);
 
                     document.getElementById(`count-${choice}`).innerText = votes[choice];
@@ -929,11 +1514,11 @@
                     document.getElementById(`rival-${choice}`).classList.add('active');
 
                     // If last vote
-                    if (i === judges.length - 1) {
+                    if (i === anonymousJudgesCount - 1) {
                         setTimeout(() => showWinner(votes), 1000);
                     }
                 }, 1000 + i * 1200);
-            });
+            }
         }
 
         function showWinner(votes) {
