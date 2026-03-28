@@ -1390,6 +1390,21 @@
                     (スタート)</button>
             </div>
         </div>
+
+        <!-- Intro Overlay -->
+        <div id="intro-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:26000; display:none; flex-direction:column; align-items:center; justify-content:center; color:#fff; overflow:hidden;">
+            <p id="author-text" style="position: absolute; font-size: 2.5rem; font-weight: bold; opacity: 0; letter-spacing: 0.2em; font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; transition: opacity 1.5s ease-in-out; text-shadow: 0 0 20px rgba(255,255,255,0.3); z-index: 5; text-align: center;">作　安田建琉</p>
+            <p id="intro-text" style="position: absolute; font-size: 3.5rem; font-weight: bold; opacity: 0; letter-spacing: 0.1em; font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; transition: opacity 1.5s ease-in-out; text-shadow: 0 0 20px rgba(255,255,255,0.3); z-index: 2;">あの日から俺たちのお笑いは始まった</p>
+            <div id="sad-img" style="position: absolute; top:0; left:0; width:100%; height:100%; background: url('assets/sad_scene.png') center/cover no-repeat; opacity: 0; filter: sepia(0.5) contrast(1.1) brightness(0.7); z-index: 1; transform: scale(1);"></div>
+            <div id="poor-img" style="position: absolute; top:0; left:0; width:100%; height:100%; background: url('assets/poor_family.png') center/cover no-repeat; opacity: 0; filter: sepia(0.6) contrast(1.2) brightness(0.6); z-index: 1; transform: scale(1);"></div>
+            <p id="poor-text1" style="position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: bold; opacity: 0; letter-spacing: 0.1em; font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; transition: opacity 1.5s ease-in-out; text-shadow: 0 0 30px #000, 0 5px 10px #000; z-index: 2; width: 100%; text-align: center;">子供「お腹すいたーーー」</p>
+            <p id="poor-text2" style="position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); font-size: 3.2rem; font-weight: bold; opacity: 0; letter-spacing: 0.05em; font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; transition: opacity 1.5s ease-in-out; text-shadow: 0 0 30px #000, 0 5px 10px #000; z-index: 2; width: 100%; text-align: center; color: #ddd;">母「ごめんね…家はお金ないの」</p>
+            <p id="poor-text3" style="position: absolute; top: 75%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5rem; font-weight: bold; opacity: 0; letter-spacing: 0.1em; font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; transition: opacity 2s ease-in-out; text-shadow: 0 0 30px #000, 0 5px 10px #000; z-index: 3; width: 100%; text-align: center; color: #fff;">（もう二度と、お母さんにあんな思いをさせない…！）</p>
+            <div id="flashback-img" style="position: absolute; top:0; left:0; width:100%; height:100%; background: url('assets/flashback.png') center/cover no-repeat; opacity: 0; filter: sepia(0.8) contrast(1.2); z-index: 1; transform: scale(1);"></div>
+            <p id="flashback-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: bold; opacity: 0; letter-spacing: 0.1em; font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; transition: opacity 1.5s ease-in-out; text-shadow: 0 0 30px #000, 0 5px 10px #000; z-index: 3; width: 100%; text-align: center;">俺と一緒にコンビをくまないか？</p>
+            <p id="flashback-text2" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 5rem; font-weight: 1000; color: #f1c40f; opacity: 0; letter-spacing: 0.15em; font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; transition: opacity 1.5s ease-in-out, transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-shadow: 0 0 40px #d35400, 0 0 20px #e67e22, 0 5px 15px #000; z-index: 4; width: 100%; text-align: center;">そして今！Ｍー１の舞台に！</p>
+            <button id="skip-intro" onclick="skipIntroAndStart()" style="position: absolute; bottom: 30px; right: 30px; padding: 10px 20px; font-size: 1.2rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 5px; cursor: pointer; z-index: 10; opacity: 0.5; transition: opacity 0.3s; display: none;">スキップ</button>
+        </div>
     </div>
 
     <script>
@@ -1462,9 +1477,145 @@
                 event.preventDefault();
                 handleSubmit();
             }
-        }); function hideRulesAndStart() {
-            document.getElementById('rules-overlay').style.display = 'none'; startShow();
-        } function startShow() {
+        });
+        
+        let introTimeout0, introTimeout1, introTimeout2, introTimeout3, introTimeout4, introTimeout5, introTimeout6, introTimeout7, introTimeout8, introTimeout9, introTimeout10, introTimeout11, introTimeout12;
+
+        function hideRulesAndStart() {
+            document.getElementById('rules-overlay').style.display = 'none';
+            const intro = document.getElementById('intro-overlay');
+            const authorTxt = document.getElementById('author-text');
+            const txt = document.getElementById('intro-text');
+            const sadImg = document.getElementById('sad-img');
+            const poorImg = document.getElementById('poor-img');
+            const poorTxt1 = document.getElementById('poor-text1');
+            const poorTxt2 = document.getElementById('poor-text2');
+            const poorTxt3 = document.getElementById('poor-text3');
+            const flashImg = document.getElementById('flashback-img');
+            const flashTxt = document.getElementById('flashback-text');
+            const skipBtn = document.getElementById('skip-intro');
+            
+            intro.style.display = 'flex';
+            skipBtn.style.display = 'block';
+            
+            // 0. タイトルカード（作 安田建琉）
+            introTimeout0 = setTimeout(() => {
+                authorTxt.style.opacity = 1;
+                
+                // 3秒後に消える
+                setTimeout(() => {
+                    authorTxt.style.opacity = 0;
+                }, 3000);
+            }, 500);
+
+            // 1. 最初のテキストフェードイン
+            introTimeout1 = setTimeout(() => { 
+                txt.style.opacity = 1; 
+            }, 5000);
+            
+            // 2. テキストが消滅し、残酷な思いの画像(sad-img)に移行
+            introTimeout2 = setTimeout(() => {
+                txt.style.opacity = 0;
+                setTimeout(() => {
+                    sadImg.style.transition = "opacity 3s ease-in-out, transform 10s linear";
+                    sadImg.style.opacity = 1;
+                    sadImg.style.transform = "scale(1.1)";
+                }, 1500);
+            }, 8500);
+
+            // 2.5 残酷な画像から貧困の画像へ移行
+            introTimeout7 = setTimeout(() => {
+                sadImg.style.opacity = 0;
+                setTimeout(() => {
+                    poorImg.style.transition = "opacity 3s ease-in-out, transform 15s linear";
+                    poorImg.style.opacity = 1;
+                    poorImg.style.transform = "scale(1.15)";
+                }, 1000);
+            }, 14500);
+
+            // 2.6 貧困シーンのセリフ①（子供）
+            introTimeout8 = setTimeout(() => {
+                poorTxt1.style.opacity = 1;
+            }, 17500);
+
+            // 2.7 貧困シーンのセリフ②（母）
+            introTimeout9 = setTimeout(() => {
+                poorTxt2.style.opacity = 1;
+            }, 20500);
+
+            // 母と子のセリフが消える
+            introTimeout12 = setTimeout(() => {
+                poorTxt1.style.opacity = 0;
+                poorTxt2.style.opacity = 0;
+            }, 24000);
+
+            // 2.8 【NEW】男の子の決意のセリフ
+            introTimeout10 = setTimeout(() => {
+                poorTxt3.style.opacity = 1;
+            }, 25500);
+            
+            // 2.9 画像と決意のセリフを消して、コンビ結成の画像へ
+            introTimeout11 = setTimeout(() => {
+                poorImg.style.opacity = 0;
+                poorTxt3.style.opacity = 0;
+                
+                setTimeout(() => {
+                    flashImg.style.transition = "opacity 3s ease-in-out, transform 25s linear";
+                    flashImg.style.opacity = 1;
+                    flashImg.style.transform = "scale(1.15)";
+                }, 1500);
+            }, 30500);
+
+            // 3. コンビ結成のセリフが出現
+            introTimeout3 = setTimeout(() => {
+                flashTxt.style.opacity = 1;
+                
+                // 更に4秒後、「そして今！」のテキストが出現
+                introTimeout6 = setTimeout(() => {
+                    flashTxt.style.opacity = 0;
+                    setTimeout(() => {
+                        const txt2 = document.getElementById('flashback-text2');
+                        txt2.style.opacity = 1;
+                        txt2.style.transform = "translate(-50%, -50%) scale(1.1)";
+                    }, 1500);
+                }, 4000);
+            }, 34500);
+
+            // 4. 映像とセリフがフェードアウト
+            introTimeout4 = setTimeout(() => {
+                flashImg.style.opacity = 0;
+                flashTxt.style.opacity = 0;
+                document.getElementById('flashback-text2').style.opacity = 0;
+            }, 45500);
+
+            // 5. ゲーム開始
+            introTimeout5 = setTimeout(() => {
+                intro.style.display = 'none';
+                startShow();
+            }, 48500);
+        }
+
+        function skipIntroAndStart() {
+            clearTimeout(introTimeout0);
+            clearTimeout(introTimeout1);
+            clearTimeout(introTimeout2);
+            clearTimeout(introTimeout3);
+            clearTimeout(introTimeout4);
+            clearTimeout(introTimeout5);
+            clearTimeout(introTimeout6);
+            clearTimeout(introTimeout7);
+            clearTimeout(introTimeout8);
+            clearTimeout(introTimeout9);
+            clearTimeout(introTimeout10);
+            clearTimeout(introTimeout11);
+            clearTimeout(introTimeout12);
+            
+            const intro = document.getElementById('intro-overlay');
+            intro.style.display = 'none';
+            startShow();
+        }
+        
+        function startShow() {
             stage.classList.add('game-active'); // Trigger background change
 
             // 1. Start timer IMMEDIATELY
